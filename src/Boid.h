@@ -23,6 +23,10 @@ public:
 
     void separation(Flock& flock);
 
+    void limitSpeed(float maxSpeed);
+
+    void randomize(Flock& flock);
+
     sf::CircleShape shape;
     sf::Vector2f velocity;
 };

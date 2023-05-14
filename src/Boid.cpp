@@ -2,12 +2,10 @@
 #include "Boid.h"
 
 Boid::Boid(float x, float y) {
-    //shape = sf::CircleShape(5.f);
     sf::CircleShape triangle(10, 3);
     shape = triangle;
     shape.setPosition(x, y);
-    shape.setFillColor(sf::Color::White);  // Set color to white
-    //velocity = sf::Vector2f((std::rand() % 3) - 1, (std::rand() % 3) - 1);
+    shape.setFillColor(sf::Color::White);
     velocity = sf::Vector2f((std::rand() % 20 - 10) / 100.f, (std::rand() % 20 - 10) / 100.f);
 }
 
@@ -20,10 +18,18 @@ void Boid::update() {
     else if (shape.getPosition().y > 600) velocity.y = -abs(velocity.y);
 }
 
+void randomize(Flock& flock) {
+    for (Boid& other : flock.boids) {
+        other.velocity += sf::Vector2f((std::rand() % 200 - 100) / 1000.f, (std::rand() % 200 - 100) / 1000.f);
+    }
+}
+
 void Boid::applyRules(Flock& flock) {
     align(flock);
     cohesion(flock);
     separation(flock);
+    randomize(flock);
+    limitSpeed(0.4f);
 }
 
 void Boid::draw(sf::RenderWindow& window) {
@@ -37,7 +43,7 @@ void Boid::align(Flock& flock) {
     }
     perceivedVelocity /= static_cast<float>(flock.boids.size());
 
-    velocity += (perceivedVelocity - velocity) / 80.f;  // adjust this value as needed
+    velocity += (perceivedVelocity - velocity) / 80.f;
 }
 
 void Boid::cohesion(Flock& flock) {
@@ -47,9 +53,9 @@ void Boid::cohesion(Flock& flock) {
     }
     centerOfMass /= static_cast<float>(flock.boids.size());
 
-    velocity += (centerOfMass - shape.getPosition()) / 100.f;  // adjust this value as needed
+    velocity += (centerOfMass - shape.getPosition()) / 100.f;  // adjust as needed
 }
-
+/*
 void Boid::separation(Flock& flock) {
     sf::Vector2f c;
     for (Boid& other : flock.boids) {
@@ -60,5 +66,28 @@ void Boid::separation(Flock& flock) {
         }
     }
 
-    velocity += c / 8.f;  // adjust this value as needed
+    velocity += c / 10.f;  // adjust as needed
+}*/
+
+void Boid::separation(Flock& flock) {
+    sf::Vector2f c;
+    for (Boid& other : flock.boids) {
+        if (&other == this) continue;
+        float distance = std::sqrt(std::pow(shape.getPosition().x - other.shape.getPosition().x, 2) +
+            std::pow(shape.getPosition().y - other.shape.getPosition().y, 2));
+        if (distance < 20.f) {  // adjust this value as needed
+            c -= (other.shape.getPosition() - shape.getPosition()) / distance;
+        }
+    }
+
+    velocity += c;
+}
+
+
+void Boid::limitSpeed(float maxSpeed) {
+    float magnitude = std::sqrt(velocity.x * velocity.x + velocity.y * velocity.y);
+    if (magnitude > maxSpeed) {
+        velocity /= magnitude;  // Normalize
+        velocity *= maxSpeed;  // Scale to maxSpeed
+    }
 }
