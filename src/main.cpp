@@ -1,38 +1,26 @@
-#include <iostream>
 #include <SFML/Graphics.hpp>
+#include <vector>
+#include <cstdlib>
+#include <ctime>
+#include "Flock.h"
+#include "Boid.h"
 
-struct Position {
-    float x;
-    float y;
-};
 
-struct Velocity {
-    float dx;
-    float dy;
-};
+int main() {
+    sf::RenderWindow window(sf::VideoMode(800, 600), "Boids Simulation");
+    Flock flock(100);
 
-struct Boid {
-    Position position;
-    Velocity velocity;
-};
-
-int main()
-{
-	sf::RenderWindow window(sf::VideoMode(600, 600), "SFML window");
-
-    while (window.isOpen())
-    {
+    while (window.isOpen()) {
         sf::Event event;
-        window.clear(sf::Color::Black);
-        sf::RectangleShape rs(sf::Vector2f(100, 100));
-        window.draw(rs);
-        while (window.pollEvent(event))
-        {
+        while (window.pollEvent(event)) {
             if (event.type == sf::Event::Closed)
                 window.close();
         }
 
+        flock.update();
+
         window.clear();
+        flock.draw(window);
         window.display();
     }
 
