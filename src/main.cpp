@@ -7,7 +7,7 @@
 
 
 int main() {
-    sf::RenderWindow window(sf::VideoMode(2000, 1200), "Boids Simulation");
+    sf::RenderWindow window(sf::VideoMode(1200, 800), "Boids Simulation");
     Flock flock(200);
 
     while (window.isOpen()) {

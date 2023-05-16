@@ -7,6 +7,7 @@ Boid::Boid(float x, float y) {
     shape.setPosition(x, y);
     shape.setFillColor(sf::Color::White);
     velocity = sf::Vector2f((std::rand() % 20 - 10) / 100.f, (std::rand() % 20 - 10) / 100.f);
+    //velocity = sf::Vector2f(std::rand() * 1.f, std::rand() * 1.f);
 }
 
 void Boid::update() {
@@ -28,7 +29,7 @@ void Boid::applyRules(Flock& flock) {
     align(flock);
     cohesion(flock);
     separation(flock);
-    randomize(flock);
+    //randomize(flock);
     limitSpeed(0.4f);
 }
 
