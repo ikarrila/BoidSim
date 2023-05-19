@@ -9,6 +9,7 @@ class Flock;
 class Boid {
 
 public:
+
     Boid(float x, float y);
 
     void update();
@@ -27,8 +28,12 @@ public:
 
     void randomize(Flock& flock);
 
+    void calculateNewVelocity(Flock& flock);
+    void applyNewVelocity();
+
     sf::CircleShape shape;
     sf::Vector2f velocity;
+    sf::Vector2f newVelocity;
 };
 
 #endif

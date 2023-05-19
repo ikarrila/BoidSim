@@ -19,7 +19,7 @@ void Boid::update() {
     else if (shape.getPosition().y > 600) velocity.y = -abs(velocity.y);
 }
 
-void randomize(Flock& flock) {
+void Boid::randomize(Flock& flock) {
     for (Boid& other : flock.boids) {
         other.velocity += sf::Vector2f((std::rand() % 200 - 100) / 1000.f, (std::rand() % 200 - 100) / 1000.f);
     }
@@ -54,7 +54,7 @@ void Boid::cohesion(Flock& flock) {
     }
     centerOfMass /= static_cast<float>(flock.boids.size());
 
-    velocity += (centerOfMass - shape.getPosition()) / 100.f;  // adjust as needed
+    velocity += (centerOfMass - shape.getPosition()) / 50.f;  // adjust as needed
 }
 /*
 void Boid::separation(Flock& flock) {
@@ -91,4 +91,20 @@ void Boid::limitSpeed(float maxSpeed) {
         velocity /= magnitude;  // Normalize
         velocity *= maxSpeed;  // Scale to maxSpeed
     }
+}
+
+
+void Boid::calculateNewVelocity(Flock& flock) {
+    // Calculate new velocity based on the Boids rules
+    align(flock);
+    cohesion(flock);
+    separation(flock);
+    randomize(flock);
+    limitSpeed(1.4f);  // Set maxSpeed to desired value
+
+    newVelocity = velocity;
+}
+
+void Boid::applyNewVelocity() {
+    velocity = newVelocity;
 }

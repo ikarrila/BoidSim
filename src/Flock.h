@@ -2,17 +2,20 @@
 #define FLOCK_H
 
 #include "Boid.h"
+#include "ThreadPool.h"
 
 class Flock {
 
 public:
     std::vector<Boid> boids;
+    ThreadPool& threadPool;
 
-    Flock(int size);
+    Flock(int size, ThreadPool& threadPool);
 
     void update();
 
     void draw(sf::RenderWindow& window);
+
 
 private:
     int flock_members;
